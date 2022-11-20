@@ -19,6 +19,8 @@
             PopulateLocationResponseForUs90210();
             PopulateLocationResponseForIt50123();
             PopulateQueryParamResponse();
+            PopulateBasicAuthResponse();
+            PopulateOAuth2Response();
         }
 
         private void PopulateLocationResponseForUs90210()
@@ -76,10 +78,26 @@
                 .WithStatusCode(200));
         }
 
-        public void PopulateQueryParamResponse()
+        private void PopulateQueryParamResponse()
         {
             Server.Given(Request.Create().WithPath("/user").UsingGet()
                 .WithParam("name", "John"))
+                .RespondWith(Response.Create()
+                .WithStatusCode(200));
+        }
+
+        private void PopulateBasicAuthResponse()
+        {
+            Server.Given(Request.Create().WithPath("/basic-auth").UsingGet()
+                .WithHeader("Authorization", "Basic am9objpkZW1v"))
+                .RespondWith(Response.Create()
+                .WithStatusCode(200));
+        }
+
+        private void PopulateOAuth2Response()
+        {
+            Server.Given(Request.Create().WithPath("/oauth2").UsingGet()
+                .WithHeader("Authorization", "Bearer this_is_my_token"))
                 .RespondWith(Response.Create()
                 .WithStatusCode(200));
         }
