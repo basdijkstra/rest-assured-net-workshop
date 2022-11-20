@@ -4,7 +4,7 @@
     using static RestAssured.Dsl;
 
     [TestFixture]
-    public class RestAssuredNetExamples01 : ExampleBase
+    public class Examples01 : ExampleBase
     {
         [Test]
         public void GetLocationsForUsZipCode90210()
