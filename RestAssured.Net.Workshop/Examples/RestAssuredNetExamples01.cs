@@ -16,6 +16,8 @@
             .AssertThat()
             .StatusCode(200)
             .And()
+            .ContentType("application/json")
+            .And()
             .Body("$.Places[0].Name", NHamcrest.Is.EqualTo("Sun City"));
         }
     }
