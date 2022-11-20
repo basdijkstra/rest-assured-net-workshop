@@ -22,6 +22,21 @@
         }
 
         [Test]
+        public void GetLocationsForUsZipCode90210InXml()
+        {
+            Given()
+            .When()
+            .Get("http://localhost:9876/xml/us/90210")
+            .Then()
+            .AssertThat()
+            .StatusCode(200)
+            .And()
+            .ContentType("application/xml")
+            .And()
+            .Body("//Place[1]/Name", NHamcrest.Is.EqualTo("Sun City"));
+        }
+        
+        [Test]
         public void DemonstrateRequestAndResponseLogging()
         {
             Given()

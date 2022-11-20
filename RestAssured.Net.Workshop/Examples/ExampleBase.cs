@@ -6,10 +6,15 @@
     using WireMock.RequestBuilders;
     using WireMock.ResponseBuilders;
     using RestAssured.Net.Workshop.Examples.Models;
+    using WireMock.Matchers;
 
     public class ExampleBase
     {
         protected WireMockServer Server { get; private set; }
+
+        private readonly string expectedSerializedJsonRequestBody = "{\"Country\":\"Italy\",\"State\":\"Tuscany\",\"ZipCode\":50123,\"Places\":[{\"Name\":\"Florence\",\"Inhabitants\":383000,\"IsCapital\":false}]}";
+
+        private readonly string xmlBody = "<?xml version=\"1.0\" encoding=\"utf-16\"?><Location xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"><Country>United States</Country><State>California</State><ZipCode>90210</ZipCode><Places><Place><Name>Sun City</Name><Inhabitants>100000</Inhabitants><IsCapital>true</IsCapital></Place><Place><Name>Pleasure Meadow</Name><Inhabitants>50000</Inhabitants><IsCapital>false</IsCapital></Place></Places></Location>";
 
         [SetUp]
         public void StartServer()
@@ -21,6 +26,9 @@
             PopulateQueryParamResponse();
             PopulateBasicAuthResponse();
             PopulateOAuth2Response();
+            PopulateXmlResponse();
+            CreateJsonSerializationStub();
+            CreateXmlSerializationStub();
         }
 
         private void PopulateLocationResponseForUs90210()
@@ -100,6 +108,30 @@
                 .WithHeader("Authorization", "Bearer this_is_my_token"))
                 .RespondWith(Response.Create()
                 .WithStatusCode(200));
+        }
+
+        private void PopulateXmlResponse()
+        {
+            Server.Given(Request.Create().WithPath("/xml/us/90210").UsingGet())
+                .RespondWith(Response.Create()
+                .WithHeader("Content-Type", "application/xml")
+                .WithBody(xmlBody)
+                .WithStatusCode(200));
+        }
+
+        private void CreateJsonSerializationStub()
+        {
+            Server.Given(Request.Create().WithPath("/json-serialization").UsingPost()
+                .WithBody(new JsonMatcher(expectedSerializedJsonRequestBody)))
+                .RespondWith(Response.Create()
+                .WithStatusCode(201));
+        }
+        private void CreateXmlSerializationStub()
+        {
+            Server.Given(Request.Create().WithPath("/xml-serialization").UsingPost()
+                .WithBody(new XPathMatcher("//Places[count(Place) = 2]")))
+                .RespondWith(Response.Create()
+                .WithStatusCode(201));
         }
 
         [TearDown]
