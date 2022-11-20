@@ -20,5 +20,18 @@
             .And()
             .Body("$.Places[0].Name", NHamcrest.Is.EqualTo("Sun City"));
         }
+
+        [Test]
+        public void DemonstrateRequestAndResponseLogging()
+        {
+            Given()
+            .Log().All()
+            .When()
+            .Get("http://localhost:9876/us/90210")
+            .Then()
+            .Log().All()
+            .And()
+            .StatusCode(200);
+        }
     }
 }
