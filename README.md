@@ -8,7 +8,9 @@ A machine with .NET 6, .NET 7 or .NET 8 and an IDE of your choice. That's it.
 
 What API is used for the exercises?
 ---
-All API calls that are used in the examples and exercises have been mocked using [WireMock.Net](https://github.com/WireMock-Net/WireMock.Net). WireMock.Net is included in this project as a dependency, so there's no need for additional setup.
+All API calls that are used in the exercises have been mocked using [WireMock.Net](https://github.com/WireMock-Net/WireMock.Net). WireMock.Net is included in this project as a dependency, so there's no need for additional setup.
+
+Please note that some of the examples contain fictional endpoints, and that the examples are not meant to be run.
 
 Running the mock server
 ---
