@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using WireMock.Matchers;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
@@ -18,6 +19,8 @@ namespace RestAssuredNetWorkshop
             AddCustomer12323();
             AddCustomer14545();
             AddCustomer12212Accounts();
+            AddToken();
+            AddCustomer12212Secure();
         }
 
         [TearDown]
@@ -122,6 +125,44 @@ namespace RestAssuredNetWorkshop
                 .WithStatusCode(200)
                 .WithHeader("Content-Type", "application/json")
                 .WithBodyAsJson(accounts));
+        }
+
+        private void AddToken()
+        {
+            var response = new
+            {
+                token = "c4515429-0c2e-4520-894c-fbd5e8ae5874"
+            };
+
+            this.Server?.Given(Request.Create().WithPath("/token").UsingGet()
+                .WithHeader("Authorization", new ExactMatcher("Basic am9objpkZW1v")))
+                .RespondWith(Response.Create()
+                .WithStatusCode(200)
+                .WithHeader("Content-Type", "application/json")
+                .WithBodyAsJson(response));
+        }
+
+        private void AddCustomer12212Secure()
+        {
+            var customer = new
+            {
+                id = 12212,
+                firstName = "John",
+                lastName = "Smith",
+                address = new
+                {
+                    street = "Main Street",
+                    number = 123,
+                    city = "Beverly Hills"
+                }
+            };
+
+            this.Server?.Given(Request.Create().WithPath("/secure/customer/12212").UsingGet()
+                .WithHeader("Authorization", new ExactMatcher("Bearer c4515429-0c2e-4520-894c-fbd5e8ae5874")))
+                .RespondWith(Response.Create()
+                .WithStatusCode(200)
+                .WithHeader("Content-Type", "application/json")
+                .WithBodyAsJson(customer));
         }
     }
 }
