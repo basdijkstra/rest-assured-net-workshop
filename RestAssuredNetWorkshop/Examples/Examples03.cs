@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using RestAssured.Request.Builders;
 using static RestAssured.Dsl;
 
 namespace RestAssuredNetWorkshop.Examples
@@ -41,6 +42,29 @@ namespace RestAssuredNetWorkshop.Examples
                 .PathParam("userId", userId)
                 .When()
                 .Get("https://my.user.api/user/[userId]")
+                .Then()
+                .StatusCode(200);
+        }
+
+        private RequestSpecification? requestSpec;
+
+        [SetUp]
+        public void CreateRequestSpecification()
+        {
+            requestSpec = new RequestSpecBuilder()
+                .WithBaseUri("https://jsonplaceholder.typicode.com")
+                .WithContentType("application/json")
+                .WithOAuth2("my_authentication_token")
+                .Build();
+        }
+
+        [Test]
+        public void UseRequestSpecification()
+        {
+            Given()
+                .Spec(requestSpec)
+                .When()
+                .Get("/users/1")
                 .Then()
                 .StatusCode(200);
         }
