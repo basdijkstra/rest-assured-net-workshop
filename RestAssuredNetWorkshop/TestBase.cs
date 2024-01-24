@@ -21,6 +21,7 @@ namespace RestAssuredNetWorkshop
             AddCustomer12212Accounts();
             AddToken();
             AddCustomer12212Secure();
+            AddPostAccount();
         }
 
         [TearDown]
@@ -163,6 +164,16 @@ namespace RestAssuredNetWorkshop
                 .WithStatusCode(200)
                 .WithHeader("Content-Type", "application/json")
                 .WithBodyAsJson(customer));
+        }
+
+        private void AddPostAccount()
+        {
+            string expectedBody = "{\"id\":12345,\"type\":\"savings\",\"balance\":0}";
+
+            this.Server?.Given(Request.Create().WithPath("/accounts").UsingPost()
+                .WithBody(new JsonMatcher(expectedBody)))
+                .RespondWith(Response.Create()
+                .WithStatusCode(201));
         }
     }
 }
