@@ -50,6 +50,7 @@ namespace RestAssuredNetWorkshop.Examples
                 .Then()
                 .AssertThat()
                 .StatusCode(200)
+                .And()
                 .ContentType("application/json; charset=utf-8");
         }
     }
