@@ -2,7 +2,7 @@
 
 namespace RestAssuredNetWorkshop.Answers.Models
 {
-    internal class Account
+    public class Account
     {
         [JsonProperty("id")]
         public int Id { get; set; }

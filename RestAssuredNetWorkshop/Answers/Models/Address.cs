@@ -2,7 +2,7 @@
 
 namespace RestAssuredNetWorkshop.Answers.Models
 {
-    internal class Address
+    public class Address
     {
         [JsonProperty("street")]
         public string Street { get; set; } = string.Empty;
