@@ -2,7 +2,7 @@
 
 namespace RestAssuredNetWorkshop.Examples.Models
 {
-    internal class Post
+    public class Post
     {
         [JsonProperty("userId")]
         public int UserId { get; set; }
