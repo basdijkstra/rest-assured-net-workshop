@@ -10,6 +10,8 @@ namespace RestAssuredNetWorkshop
     {
         protected WireMockServer? Server { get; private set; }
 
+        private readonly string authenticationToken = "c4515429-0c2e-4520-894c-fbd5e8ae5874";
+
         [SetUp]
         protected void StartServer()
         {
@@ -133,7 +135,7 @@ namespace RestAssuredNetWorkshop
         {
             var response = new
             {
-                token = "c4515429-0c2e-4520-894c-fbd5e8ae5874"
+                token = authenticationToken
             };
 
             this.Server?.Given(Request.Create().WithPath("/token").UsingGet()
@@ -160,7 +162,7 @@ namespace RestAssuredNetWorkshop
             };
 
             this.Server?.Given(Request.Create().WithPath("/secure/customer/12212").UsingGet()
-                .WithHeader("Authorization", new ExactMatcher("Bearer c4515429-0c2e-4520-894c-fbd5e8ae5874")))
+                .WithHeader("Authorization", new ExactMatcher($"Bearer {authenticationToken}")))
                 .RespondWith(Response.Create()
                 .WithStatusCode(200)
                 .WithHeader("Content-Type", "application/json")
