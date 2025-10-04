@@ -1,6 +1,5 @@
 ﻿using NUnit.Framework;
-using RestAssured.Request.Logging;
-using RestAssured.Response.Logging;
+using RestAssured.Logging;
 using static RestAssured.Dsl;
 
 namespace RestAssuredNetWorkshop.Examples
@@ -19,25 +18,20 @@ namespace RestAssuredNetWorkshop.Examples
         }
 
         [Test]
-        public void LogAllRequestData()
+        public void LogAllRequestAndResponseData()
         {
+            var logConfiguration = new LogConfiguration
+            {
+                RequestLogLevel = RequestLogLevel.All,
+                ResponseLogLevel = ResponseLogLevel.All,
+            };
+
             Given()
-                .Log(RequestLogLevel.All)
+                .Log(logConfiguration)
                 .When()
                 .Get("https://jsonplaceholder.typicode.com/users/1")
                 .Then()
                 .AssertThat()
-                .Body("$.name", NHamcrest.Is.EqualTo("Leanne Graham"));
-        }
-
-        [Test]
-        public void LogAllResponseData()
-        {
-            Given()
-                .When()
-                .Get("https://jsonplaceholder.typicode.com/users/1")
-                .Then()
-                .Log(ResponseLogLevel.All)
                 .Body("$.name", NHamcrest.Is.EqualTo("Leanne Graham"));
         }
 
