@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using RestAssured.Logging;
 using RestAssured.Request.Builders;
 
 using static RestAssured.Dsl;
@@ -12,9 +13,16 @@ namespace RestAssuredNetWorkshop.Exercises
         [SetUp]
         public void CreateRequestSpecification()
         {
+            var logConfiguration = new LogConfiguration
+            {
+                RequestLogLevel = RequestLogLevel.All,
+                ResponseLogLevel = ResponseLogLevel.All,
+            };
+
             requestSpecification = new RequestSpecBuilder()
                 .WithBaseUri("http://localhost")
                 .WithPort(9876)
+                .WithLogConfiguration(logConfiguration)
                 .Build();
         }
                 
