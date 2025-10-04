@@ -55,5 +55,20 @@ namespace RestAssuredNetWorkshop.Answers
                 .Body("$.firstName", NHamcrest.Is.EqualTo(expectedFirstName))
                 .Body("$.lastName", NHamcrest.Is.EqualTo(expectedLastName));
         }
+
+        [TestCase(12212, "John", "Smith", TestName = "Customer with ID 12212 is John Smith - no explicit path parameter")]
+        [TestCase(12323, "Susan", "Holmes", TestName = "Customer with ID 12323 is Susan Holmes - no explicit path parameter")]
+        [TestCase(14545, "Anna", "Grant", TestName = "Customer with ID 14545 is Anna Grant - no explicit path parameter")]
+        public void CheckFirstNameAndLastNameForCustomerIDsWithoutExplicitPathParameter
+            (int customerId, string expectedFirstName, string expectedLastName)
+        {
+            Given()
+                .Spec(requestSpecification)
+                .When()
+                .Get($"/customer/{customerId}")
+                .Then()
+                .Body("$.firstName", NHamcrest.Is.EqualTo(expectedFirstName))
+                .Body("$.lastName", NHamcrest.Is.EqualTo(expectedLastName));
+        }
     }
 }
