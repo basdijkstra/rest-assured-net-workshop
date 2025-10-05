@@ -25,6 +25,10 @@ namespace RestAssuredNetWorkshop
             AddCustomer12212Secure();
             AddPostAccount();
             AddAccount12345();
+            AddGraphQLHardcodedApple();
+            AddGraphQLParameterizedApple();
+            AddGraphQLParameterizedPear();
+            AddGraphQLParameterizedBanana();
         }
 
         [TearDown]
@@ -187,5 +191,98 @@ namespace RestAssuredNetWorkshop
                 .WithStatusCode(200)
                 .WithHeader("Content-Type", "application/json"));
         }
+
+        private void AddGraphQLHardcodedApple()
+        {
+            var response = new
+            {
+                data = new
+                {
+                    fruit = new
+                    {
+                        id = 1,
+                        fruit_name = "Apple",
+                        tree_name = "Malus"
+                    }
+                }
+            };
+
+            this.Server?.Given(Request.Create().WithPath("/graphql").UsingPost()
+                .WithBody(new JsonPartialMatcher("{ \"variables\": { } }")))
+                .RespondWith(Response.Create()
+                .WithStatusCode(200)
+                .WithHeader("Content-Type", "application/json")
+                .WithBodyAsJson(response));
+        }
+
+        private void AddGraphQLParameterizedApple()
+        {
+            var response = new
+            {
+                data = new
+                {
+                    fruit = new
+                    {
+                        id = 1,
+                        fruit_name = "Apple",
+                        tree_name = "Malus"
+                    }
+                }
+            };
+
+            this.Server?.Given(Request.Create().WithPath("/graphql").UsingPost()
+                .WithBody(new JsonPartialMatcher("{ \"variables\": { \"id\": 1 } }")))
+                .RespondWith(Response.Create()
+                .WithStatusCode(200)
+                .WithHeader("Content-Type", "application/json")
+                .WithBodyAsJson(response));
+        }
+
+        private void AddGraphQLParameterizedPear()
+        {
+            var response = new
+            {
+                data = new
+                {
+                    fruit = new
+                    {
+                        id = 2,
+                        fruit_name = "Pear",
+                        tree_name = "Pyrus"
+                    }
+                }
+            };
+
+            this.Server?.Given(Request.Create().WithPath("/graphql").UsingPost()
+                .WithBody(new JsonPartialMatcher("{ \"variables\": { \"id\": 2 } }")))
+                .RespondWith(Response.Create()
+                .WithStatusCode(200)
+                .WithHeader("Content-Type", "application/json")
+                .WithBodyAsJson(response));
+        }
+
+        private void AddGraphQLParameterizedBanana()
+        {
+            var response = new
+            {
+                data = new
+                {
+                    fruit = new
+                    {
+                        id = 3,
+                        fruit_name = "Banana",
+                        tree_name = "Musa"
+                    }
+                }
+            };
+
+            this.Server?.Given(Request.Create().WithPath("/graphql").UsingPost()
+                .WithBody(new JsonPartialMatcher("{ \"variables\": { \"id\": 3 } }")))
+                .RespondWith(Response.Create()
+                .WithStatusCode(200)
+                .WithHeader("Content-Type", "application/json")
+                .WithBodyAsJson(response));
+        }
     }
+
 }
