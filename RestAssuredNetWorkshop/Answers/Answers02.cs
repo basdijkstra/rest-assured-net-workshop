@@ -19,8 +19,8 @@ namespace RestAssuredNetWorkshop.Answers
         }
 
         /**
-         * Transform these tests into a single ParameterizedTest,
-         * using a CsvSource data source with three test data rows:
+         * Transform these tests into a parameterized test, with
+         * three [TestCase] attributes using the following test data:
          * ------------------------------------
          * customer ID | first name | last name
          * ------------------------------------

@@ -42,14 +42,15 @@ namespace RestAssuredNetWorkshop.Exercises
              * password 'demo'.
              * 
              * Extract the value of the 'token' element in the
-             * response into a String variable.
+             * response into a String variable. Use the JsonPath
+             * expression '$.token' to do this.
              * 
              * Use the token to authenticate using OAuth2 when sending
              * a GET request to /secure/customer/12212
              * 
              * Verify that the status code of this response is equal to HTTP 200
              */
-                
+
             Given()
                 .Spec(requestSpecification);
 

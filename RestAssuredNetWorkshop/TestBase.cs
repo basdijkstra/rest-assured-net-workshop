@@ -24,6 +24,7 @@ namespace RestAssuredNetWorkshop
             AddToken();
             AddCustomer12212Secure();
             AddPostAccount();
+            AddPostCustomer();
             AddAccount12345();
             AddGraphQLHardcodedApple();
             AddGraphQLParameterizedApple();
@@ -182,6 +183,27 @@ namespace RestAssuredNetWorkshop
                 .RespondWith(Response.Create()
                 .WithStatusCode(201)
                 .WithHeader("Content-Type", "application/json"));
+        }
+
+        private void AddPostCustomer()
+        {
+            this.Server?.Given(Request.Create().WithPath("/customers").UsingPost())
+                .RespondWith(Response.Create()
+                .WithStatusCode(201)
+                .WithHeader("Content-Type", "application/json")
+                .WithBodyAsJson(
+                    CreateCustomerResponseBody("{{JsonPath.SelectToken request.body \"$.firstName\"}}", "{{JsonPath.SelectToken request.body \"$.lastName\"}}"))
+                .WithTransformer());
+        }
+
+        private object CreateCustomerResponseBody(string firstName, string lastName)
+        {
+            return new
+            {
+                Id = 1234,
+                FirstName = firstName,
+                LastName = lastName
+            };
         }
 
         private void AddAccount12345()

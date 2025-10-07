@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using RestAssured.Logging;
 using RestAssured.Request.Builders;
 using RestAssuredNetWorkshop.Answers.Models;
 using static RestAssured.Dsl;
@@ -102,6 +103,48 @@ namespace RestAssuredNetWorkshop.Answers
 
             Assert.That(customer.LastName, Is.EqualTo("Smith"));
             Assert.That(customer.Address.Street, Is.EqualTo("Main Street"));
+        }
+
+        [Test]
+        public void PostCustomerObject_CheckReturnedFirstAndLastName_ExpectSuppliedValues()
+        {
+            /**
+             * Create a new Customer object with a first name and a
+             * last name of your own choosing (the other fields will be ignored)
+             *
+             * POST this object to /customers
+             *
+             * Deserialize the response into another object of type
+             * Customer and use NUnit Assert.That() assertions to
+             * check that the first name and last name returned by
+             * the API are the same as those you set in the request
+             * when you POSTed the Customer object
+             */
+
+            var customer = new Customer
+            {
+                FirstName = "Anna",
+                LastName = "Grant"
+            };
+
+            var logConfig = new LogConfiguration
+            {
+                RequestLogLevel = RequestLogLevel.All,
+                ResponseLogLevel = ResponseLogLevel.All
+            };
+
+            var returnedCustomer = (Customer)Given()
+                .Spec(requestSpecification)
+                .Log(logConfig)
+                .Body(customer)
+                .When()
+                .Post("/customers")
+                .Then()
+                .StatusCode(201)
+                .DeserializeTo(typeof(Customer));
+
+            Assert.That(returnedCustomer.FirstName, Is.EqualTo("Anna"));
+            Assert.That(returnedCustomer.LastName, Is.EqualTo("Grant"));
         }
     }
 }

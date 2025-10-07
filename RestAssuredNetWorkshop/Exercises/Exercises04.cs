@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using RestAssured.Logging;
 using RestAssured.Request.Builders;
 using RestAssuredNetWorkshop.Answers.Models;
 using static RestAssured.Dsl;
@@ -67,6 +68,26 @@ namespace RestAssuredNetWorkshop.Exercises
              * 
              * You don't need to create or modify the Customer or the Address object,
              * that has been done for you already. By all means do have a look at them, though
+             */
+
+            Given()
+                .Spec(requestSpecification);
+        }
+
+        [Test]
+        public void PostCustomerObject_CheckReturnedFirstAndLastName_ExpectSuppliedValues()
+        {
+            /**
+             * Create a new Customer object with a first name and a
+             * last name of your own choosing (the other fields will be ignored)
+             *
+             * POST this object to /customers
+             *
+             * Deserialize the response into another object of type
+             * Customer and use NUnit Assert.That() assertions to
+             * check that the first name and last name returned by
+             * the API are the same as those you set in the request
+             * when you POSTed the Customer object
              */
 
             Given()
