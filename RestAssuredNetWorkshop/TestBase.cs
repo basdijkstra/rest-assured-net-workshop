@@ -26,6 +26,7 @@ namespace RestAssuredNetWorkshop
             AddPostAccount();
             AddPostCustomer();
             AddAccount12345();
+            AddAccountsListXml();
             AddGraphQLHardcodedApple();
             AddGraphQLParameterizedApple();
             AddGraphQLParameterizedPear();
@@ -194,6 +195,35 @@ namespace RestAssuredNetWorkshop
                 .WithBodyAsJson(
                     CreateCustomerResponseBody("{{JsonPath.SelectToken request.body \"$.firstName\"}}", "{{JsonPath.SelectToken request.body \"$.lastName\"}}"))
                 .WithTransformer());
+        }
+
+        private void AddAccountsListXml()
+        {
+            string xmlResponse = @"<?xml version=""1.0"" encoding=""UTF-8"" ?>
+                <accounts>
+	                <account type=""checking"">
+		                <id>12345</id>
+		                <balance>1234.56</balance>
+	                </account>
+	                <account type=""checking"">
+		                <id>54321</id>
+		                <balance>98.76</balance>
+	                </account>
+	                <account type=""checking"">
+		                <id>55555</id>
+		                <balance>43.21</balance>
+	                </account>
+	                <account type=""savings"">
+		                <id>98765</id>
+		                <balance>10123.00</balance>
+	                </account>
+                </accounts>";
+
+            this.Server?.Given(Request.Create().WithPath("/xml/customers/12212/accounts").UsingGet())
+                .RespondWith(Response.Create()
+                .WithStatusCode(200)
+                .WithHeader("Content-Type", "application/xml")
+                .WithBody(xmlResponse));
         }
 
         private object CreateCustomerResponseBody(string firstName, string lastName)

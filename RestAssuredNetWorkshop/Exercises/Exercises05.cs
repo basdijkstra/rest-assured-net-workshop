@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using RestAssured.Logging;
 using RestAssured.Request.Builders;
+using RestAssuredNetWorkshop.Answers.Models;
 using static RestAssured.Dsl;
 
 namespace RestAssuredNetWorkshop.Exercises
@@ -19,81 +20,78 @@ namespace RestAssuredNetWorkshop.Exercises
         }
 
         [Test]
-        public void GetFruitData_CheckFruitAndTreeName_ShouldBeAppleAndMalus()
+        public void SerializeAccountToJson_CheckStatusCode_ShouldBeHttp201()
         {
             /**
-             * Create a new payload for a GraphQL query using a
-             * the specified query (with hardcoded ID) and
-             * with operation name GetFruit
-             *
-             * POST this object to /graphql
-             *
-             * Assert that the name of the fruit is equal to "Apple"
-             * Use "$.data.fruit.fruit_name" as the JsonPath
-             * expression to extract the required value from the response
-             *
-             * Also, assert that the tree name is equal to "Malus"
-             * Use "$.data.fruit.tree_name" as the JsonPath
-             * expression to extract the required value from the response
+             * Create a new Account object with 12345 as the id and 'savings'
+             * as the account type (you can leave the balance property out as
+             * that should be assigned its default value of 0)
+             * 
+             * POST this object to /accounts
+             * 
+             * Verify that the response HTTP status code is equal to 201
              */
 
-            var queryString = @"query GetFruit {
-                    fruit(id: 1) {
-                        id
-                        fruit_name
-                        tree_name
-                    }
-                }";
-
             Given()
-                .Spec(this.requestSpecification);
+                .Spec(requestSpecification);
         }
 
         [Test]
-        public void GetFruitData_CheckFruitAndTreeName_ShouldBeAsExpected
-            (int id, string expectedFruitName, string expectedTreeName)
+        public void SerializeAnonymousObjectToJson_CheckStatusCode_ShouldBeHttp201()
         {
             /**
-             * Transform this Test into a parameterized test, with
-             * three [TestCase] attributes using the following test data:
+             * Create a new anonymous object with the following properties:
+             * - 'id' with value 12345 (int)
+             * - 'type' with value 'savings' (string)
+             * - 'balance' with value 0 (int)
              * 
-             * ---------------------------------
-             * fruit id | fruit name | tree name
-             * ---------------------------------
-             *        1 |      Apple |     Malus
-             *        2 |       Pear |     Pyrus
-             *        3 |     Banana |      Musa
-             *
-             * Create a new GraphQL query from the given query string
-             * and "GetFruit" as the operation name
+             * POST this object to /accounts
              * 
-             * Pass in the fruit id as a value to variable 'id'
-             *
-             * POST this object to /graphql
-             *
-             * Assert that the HTTP response status code is 200
-             *
-             * Assert that the name of the fruit is equal to the value in the data source
-             * Use "$.data.fruit.fruit_name" as the JsonPath
-             * expression to extract the required value from the response
-             *
-             * Also, assert that the tree name is equal to the value in the data source
-             * Use "$.data.fruit.tree_name" as the JsonPath
-             * expression to extract the required value from the response
-             ******************************************************/
+             * Verify that the response HTTP status code is equal to 201
+             */
 
-            var queryString = @"query GetFruit($id: ID!)
-                {
-                    fruit(id: $id) {
-                        id
-                        fruit_name
-                        tree_name
-                    }
-                }";
-
-            
             Given()
-                .Spec(this.requestSpecification);
+                .Spec(requestSpecification);
+        }
+
+        [Test]
+        public void DeserializeCustomer12212Response_CheckLastNameAndStreetName()
+        {
+            /**
+             * Perform an HTTP GET to /customer/12212 and deserialize the JSON
+             * response body to an object of type Customer, but only after checking
+             * that the response status is equal to HTTP 200
+             * 
+             * Use NUnit Assert.That() assertions to check that:
+             * - the value of the LastName property is equal to 'Smith'
+             * - the value of the Street property (of the Address) is equal to 'Main Street'
+             * 
+             * You don't need to create or modify the Customer or the Address object,
+             * that has been done for you already. By all means do have a look at them, though
+             */
+
+            Given()
+                .Spec(requestSpecification);
+        }
+
+        [Test]
+        public void PostCustomerObject_CheckReturnedFirstAndLastName_ExpectSuppliedValues()
+        {
+            /**
+             * Create a new Customer object with a first name and a
+             * last name of your own choosing (the other fields will be ignored)
+             *
+             * POST this object to /customers
+             *
+             * Deserialize the response into another object of type
+             * Customer and use NUnit Assert.That() assertions to
+             * check that the first name and last name returned by
+             * the API are the same as those you set in the request
+             * when you POSTed the Customer object
+             */
+
+            Given()
+                .Spec(requestSpecification);
         }
     }
 }

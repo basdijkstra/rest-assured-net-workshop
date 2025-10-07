@@ -1,7 +1,5 @@
 ﻿using NUnit.Framework;
-using RestAssured.Logging;
 using RestAssured.Request.Builders;
-using RestAssuredNetWorkshop.Answers.Models;
 using static RestAssured.Dsl;
 
 namespace RestAssuredNetWorkshop.Exercises
@@ -20,74 +18,63 @@ namespace RestAssuredNetWorkshop.Exercises
         }
 
         [Test]
-        public void SerializeAccountToJson_CheckStatusCode_ShouldBeHttp201()
+        public void GetAccountsForCustomer12212AsXml_CheckIdOfFirstAccount_ShouldBe12345()
         {
             /**
-             * Create a new Account object with 12345 as the id and 'savings'
-             * as the account type (you can leave the balance property out as
-             * that should be assigned its default value of 0)
-             * 
-             * POST this object to /accounts
-             * 
-             * Verify that the response HTTP status code is equal to 201
-             */
-
-            Given()
-                .Spec(requestSpecification);
-        }
-
-        [Test]
-        public void SerializeAnonymousObjectToJson_CheckStatusCode_ShouldBeHttp201()
-        {
-            /**
-             * Create a new anonymous object with the following properties:
-             * - 'id' with value 12345 (int)
-             * - 'type' with value 'savings' (string)
-             * - 'balance' with value 0 (int)
-             * 
-             * POST this object to /accounts
-             * 
-             * Verify that the response HTTP status code is equal to 201
-             */
-
-            Given()
-                .Spec(requestSpecification);
-        }
-
-        [Test]
-        public void DeserializeCustomer12212Response_CheckLastNameAndStreetName()
-        {
-            /**
-             * Perform an HTTP GET to /customer/12212 and deserialize the JSON
-             * response body to an object of type Customer, but only after checking
-             * that the response status is equal to HTTP 200
-             * 
-             * Use NUnit Assert.That() assertions to check that:
-             * - the value of the LastName property is equal to 'Smith'
-             * - the value of the Street property (of the Address) is equal to 'Main Street'
-             * 
-             * You don't need to create or modify the Customer or the Address object,
-             * that has been done for you already. By all means do have a look at them, though
-             */
-
-            Given()
-                .Spec(requestSpecification);
-        }
-
-        [Test]
-        public void PostCustomerObject_CheckReturnedFirstAndLastName_ExpectSuppliedValues()
-        {
-            /**
-             * Create a new Customer object with a first name and a
-             * last name of your own choosing (the other fields will be ignored)
+             * Perform a GET request to /xml/customer/12212/accounts
+             * to get the list of accounts associated with customer
+             * 12212 in XML format
              *
-             * POST this object to /customers
+             * Assert that the ID of the first account equals 12345
              *
-             * Deserialize the response into another object of type
-             * Customer and use NUnit Assert.That() assertions to
-             * check that the first name and last name returned by
-             * the API are the same as those you set in the request
-             * when you POSTed the Customer object
+             * Use "//account[1]/id" as the XPath expression to
+             * extract the required value from the response
+             */
+
+            Given()
+                .Spec(requestSpecification);
+        }
+
+        [Test]
+        public void GetAccountsForCustomer12212AsXml_CheckBalanceOfThirdAccount_ShouldBe4321()
+        {
+            /**
+             * Perform a GET request to /xml/customer/12212/accounts
+             * to get the list of accounts associated with customer
+             * 12212 in XML format
+             *
+             * Assert that the balance for the third account in the
+             * list is equal to 43.21
+             * 
+             * What do you notice about comparing numerical values?
+             * How would you address this in this exercise?
+             *
+             * Can you create the correct XPath expression yourself,
+             * using the examples as shown in the slides?
+             */
+
+            Given()
+                .Spec(requestSpecification);
+        }
+
+        [Test]
+        public void GetSavingsAccountForCustomer12212AsXml_CheckIdAndBalance_ShouldBe98765and10123()
+        {
+            /**
+             * Perform a GET request to /xml/customer/12212/accounts
+             * to get the list of accounts associated with customer
+             * 12212 in XML format
+             *
+             * Assert that the ID of the (only) savings account
+             * in the list is equal to 98765, and that its balance
+             * is equal to 10123.00
+             * 
+             * Every account has a 'type' attribute with a value
+             * equal to 'checking' or 'savings' (see for yourself by
+             * logging the response details to the console)
+             * 
+             * Can you create the correct XPath expressions yourself,
+             * using the examples as shown in the slides?
              */
 
             Given()
