@@ -1,38 +1,85 @@
 ﻿using NUnit.Framework;
-using RestAssuredNetWorkshop.Examples.Clients;
-using RestAssuredNetWorkshop.Examples.Models;
-using System.Net;
+using RestAssured.Logging;
+using RestAssured.Request.Builders;
+
+using static RestAssured.Dsl;
 
 namespace RestAssuredNetWorkshop.Examples
 {
-    public class Examples06 : TestBase
+    public class Examples06
     {
-        private readonly PostClient postClient = new PostClient();
+        private readonly string hardcodedGraphQLQuery =
+            @"query GetCountryData {
+                country(code: ""NL"") {
+                    name
+                    capital
+                    currency
+                    languages {
+                        code
+                        name
+                    }
+                }
+            }";
+
+        private readonly string parameterizedGraphQLQuery =
+            @"query GetCountryData($country: ID!) {
+                country(code: $country) {
+                    name
+                    capital
+                    currency
+                    languages {
+                        code
+                        name
+                    }
+                }
+            }";
 
         [Test]
-        public void ApplyClientTestModel_ReturnVerifiableResponse_CheckStatusCodeAndResponseHeader()
+        public void UseHardCodedValuesInQuery_CheckTheCapital()
         {
-            postClient.GetPost(1)
+            GraphQLRequest request = new GraphQLRequestBuilder()
+                .WithQuery(this.hardcodedGraphQLQuery)
+                .WithOperationName("GetCountryData")
+                .Build();
+            
+            Given()
+                .GraphQL(request)
+                .When()
+                .Post("https://countries.trevorblades.com/graphql")
                 .Then()
                 .StatusCode(200)
-                .ContentType(NHamcrest.Contains.String("application/json"));
+                .Body("$.data.country.capital", NHamcrest.Is.EqualTo("Amsterdam"));
         }
 
-        [Test]
-        public void ApplyClientTestModel_ReturnHttpResponseMessage_CheckStatusCodeAndResponseHeader()
+        [TestCase("NL", "Amsterdam", TestName = "The capital of NL is Amsterdam")]
+        [TestCase("IT", "Rome", TestName = "The capital of IT is Rome")]
+        [TestCase("CA", "Ottawa", TestName = "The capital of CA is Ottawa")]
+        public void UseParametersInQuery_CheckTheCapital(string countryCode, string expectedCapital)
         {
-            Post post = new Post
+            Dictionary<string, object> variables = new Dictionary<string, object>
             {
-                UserId = 1,
-                Title = "My new blog post",
-                Body = "This is the body of my brand new blog post."
+                { "country", countryCode },
             };
 
-            var response = postClient.CreatePost(post);
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Created));
+            GraphQLRequest request = new GraphQLRequestBuilder()
+                .WithQuery(this.parameterizedGraphQLQuery)
+                .WithOperationName("GetCountryData")
+                .WithVariables(variables)
+                .Build();
 
-            response.Content.Headers.TryGetValues("Content-Type", out IEnumerable<string>? values);
-            Assert.That(values!.First(), Does.Contain("application/json"));
+            var logConfiguration = new LogConfiguration
+            {
+                RequestLogLevel = RequestLogLevel.All,
+            };
+
+            Given()
+                .Log(logConfiguration)
+                .GraphQL(request)
+                .When()
+                .Post("https://countries.trevorblades.com/graphql")
+                .Then()
+                .StatusCode(200)
+                .Body("$.data.country.capital", NHamcrest.Is.EqualTo(expectedCapital));
         }
     }
 }

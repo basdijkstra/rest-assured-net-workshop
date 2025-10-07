@@ -1,85 +1,69 @@
 ﻿using NUnit.Framework;
-using RestAssured.Logging;
-using RestAssured.Request.Builders;
-
+using RestAssuredNetWorkshop.Examples.Models;
 using static RestAssured.Dsl;
 
 namespace RestAssuredNetWorkshop.Examples
 {
     public class Examples05
     {
-        private readonly string hardcodedGraphQLQuery =
-            @"query GetCountryData {
-                country(code: ""NL"") {
-                    name
-                    capital
-                    currency
-                    languages {
-                        code
-                        name
-                    }
-                }
-            }";
-
-        private readonly string parameterizedGraphQLQuery =
-            @"query GetCountryData($country: ID!) {
-                country(code: $country) {
-                    name
-                    capital
-                    currency
-                    languages {
-                        code
-                        name
-                    }
-                }
-            }";
-
         [Test]
-        public void UseHardCodedValuesInQuery_CheckTheCapital()
+        public void SerializePostObjectToJson()
         {
-            GraphQLRequest request = new GraphQLRequestBuilder()
-                .WithQuery(this.hardcodedGraphQLQuery)
-                .WithOperationName("GetCountryData")
-                .Build();
-            
+            Post post = new Post
+            {
+                UserId = 1,
+                Title = "My new blog post",
+                Body = "This is an awesome piece of content"
+            };
+
             Given()
-                .GraphQL(request)
+                .Body(post)
                 .When()
-                .Post("https://countries.trevorblades.com/graphql")
+                .Post("https://jsonplaceholder.typicode.com/posts")
                 .Then()
-                .StatusCode(200)
-                .Body("$.data.country.capital", NHamcrest.Is.EqualTo("Amsterdam"));
+                .StatusCode(201);
         }
 
-        [TestCase("NL", "Amsterdam", TestName = "The capital of NL is Amsterdam")]
-        [TestCase("IT", "Rome", TestName = "The capital of IT is Rome")]
-        [TestCase("CA", "Ottawa", TestName = "The capital of CA is Ottawa")]
-        public void UseParametersInQuery_CheckTheCapital(string countryCode, string expectedCapital)
+        [Test]
+        public void SerializeAnonymousObjectToJson()
         {
-            Dictionary<string, object> variables = new Dictionary<string, object>
+            var post = new
             {
-                { "country", countryCode },
-            };
-
-            GraphQLRequest request = new GraphQLRequestBuilder()
-                .WithQuery(this.parameterizedGraphQLQuery)
-                .WithOperationName("GetCountryData")
-                .WithVariables(variables)
-                .Build();
-
-            var logConfiguration = new LogConfiguration
-            {
-                RequestLogLevel = RequestLogLevel.All,
+                userId = 1,
+                title = "My new blog post",
+                body = "This is an awesome piece of content"
             };
 
             Given()
-                .Log(logConfiguration)
-                .GraphQL(request)
+                .Body(post)
                 .When()
-                .Post("https://countries.trevorblades.com/graphql")
+                .Post("https://jsonplaceholder.typicode.com/posts")
+                .Then()
+                .StatusCode(201);
+        }
+
+        [Test]
+        public void DeserializeJsonToPost()
+        {
+            Post post = (Post)Given()
+                .When()
+                .Get("https://jsonplaceholder.typicode.com/posts/1")
+                .DeserializeTo(typeof(Post));
+
+            Assert.That(post.Title, Contains.Substring("sunt aut facere"));
+        }
+
+        [Test]
+        public void DeserializeJsonToPostAfterVerification()
+        {
+            Post post = (Post)Given()
+                .When()
+                .Get("https://jsonplaceholder.typicode.com/posts/1")
                 .Then()
                 .StatusCode(200)
-                .Body("$.data.country.capital", NHamcrest.Is.EqualTo(expectedCapital));
+                .DeserializeTo(typeof(Post));
+
+            Assert.That(post.Title, Contains.Substring("sunt aut facere"));
         }
     }
 }
