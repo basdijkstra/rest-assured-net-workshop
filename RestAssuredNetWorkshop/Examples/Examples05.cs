@@ -45,25 +45,25 @@ namespace RestAssuredNetWorkshop.Examples
         [Test]
         public void DeserializeJsonToPost()
         {
-            Post post = (Post)Given()
+            var post = Given()
                 .When()
                 .Get("https://jsonplaceholder.typicode.com/posts/1")
-                .DeserializeTo(typeof(Post));
+                .DeserializeTo<Post>();
 
-            Assert.That(post.Title, Contains.Substring("sunt aut facere"));
+            Assert.That(post!.Title, Contains.Substring("sunt aut facere"));
         }
 
         [Test]
         public void DeserializeJsonToPostAfterVerification()
         {
-            Post post = (Post)Given()
+            var post = Given()
                 .When()
                 .Get("https://jsonplaceholder.typicode.com/posts/1")
                 .Then()
                 .StatusCode(200)
-                .DeserializeTo(typeof(Post));
+                .DeserializeTo<Post>();
 
-            Assert.That(post.Title, Contains.Substring("sunt aut facere"));
+            Assert.That(post!.Title, Contains.Substring("sunt aut facere"));
         }
     }
 }

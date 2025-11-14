@@ -93,16 +93,16 @@ namespace RestAssuredNetWorkshop.Answers
              * that has been done for you already. By all means do have a look at them, though
              */
 
-            Customer customer = (Customer)Given()
+            var customer = Given()
                 .Spec(requestSpecification)
                 .When()
                 .Get("/customer/12212")
                 .Then()
                 .StatusCode(200)
-                .DeserializeTo(typeof(Customer));
+                .DeserializeTo<Customer>();
 
-            Assert.That(customer.LastName, Is.EqualTo("Smith"));
-            Assert.That(customer.Address.Street, Is.EqualTo("Main Street"));
+            Assert.That(customer!.LastName, Is.EqualTo("Smith"));
+            Assert.That(customer!.Address!.Street, Is.EqualTo("Main Street"));
         }
 
         [Test]
@@ -133,7 +133,7 @@ namespace RestAssuredNetWorkshop.Answers
                 ResponseLogLevel = ResponseLogLevel.All
             };
 
-            var returnedCustomer = (Customer)Given()
+            var returnedCustomer = Given()
                 .Spec(requestSpecification)
                 .Log(logConfig)
                 .Body(customer)
@@ -141,10 +141,10 @@ namespace RestAssuredNetWorkshop.Answers
                 .Post("/customers")
                 .Then()
                 .StatusCode(201)
-                .DeserializeTo(typeof(Customer));
+                .DeserializeTo<Customer>();
 
-            Assert.That(returnedCustomer.FirstName, Is.EqualTo("Anna"));
-            Assert.That(returnedCustomer.LastName, Is.EqualTo("Grant"));
+            Assert.That(returnedCustomer!.FirstName, Is.EqualTo("Anna"));
+            Assert.That(returnedCustomer!.LastName, Is.EqualTo("Grant"));
         }
     }
 }
